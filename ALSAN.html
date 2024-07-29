@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="abde.css"> <!-- Pastikan file CSS tersedia dan berisi gaya-gaya yang sesuai -->
+</head>
+<body>
+    <div class="header">
+        <img src="poli.png" alt="logo" class="logo">
+        <img src="XOsX.gif" alt="logo" class="logo">
+    </div>
+    <div class="isi">
+        <div class="container" id="myForm">
+            <div class="blur-background"></div> 
+            <p class="banner"><b>PESAN FORM</b></p>
+            <div class="child">
+                <input type="text" class="form1" id="formNama" placeholder="Nama anda.." readonly>
+                <img src="kontak.png" alt="logo1nama" class="logonama">
+            </div>
+            <div class="grandson">
+                <input type="number" class="form2" id="formNim" placeholder="nim...." readonly>
+                <img class="logonim" src="NIM.png" alt="logo2nama">
+            </div>
+            <div class="grandson2">
+                <input type="text" placeholder="matakuliah" id="matkul">
+                <input type="text" placeholder="nama dosen" id="pengampu">
+                <input type="date" placeholder="tanggal" id="tanggal">
+                <textarea class="form3" id="formAlasan" placeholder="alasan anda"></textarea>
+            </div>
+    
+            <div class="btn">
+                <button class="submit" id="submit2">SUBMIT</button>
+                <a href="LOGIN.html" class="forget">sudah selesai?</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script>
+        document.getElementById('submit2').addEventListener('click', function(event) {
+            event.preventDefault();
+            saveData();
+        });
+
+        //variabel global
+
+        const defaultNama = "abde";
+        const defaultNim = "88012023003";
+        //funngsi save halalaman pesan ke local storage
+
+        function saveData() {
+            let form1Value = document.getElementById("formNama").value;
+            let form2Value = document.getElementById("formNim").value;
+            let form4Value = document.getElementById("matkul").value;
+            let form5Value = document.getElementById("pengampu").value;
+            let form6Value = document.getElementById("tanggal").value;
+            let form7Value = document.getElementById("formAlasan").value;
+            //pengkondisian harus diisi semua
+            if (!form4Value || !form5Value || !form6Value || !form7Value) {
+                alert("Please fill in all the required fields.");
+                return;
+            }
+            //variabel penyimpan nilai
+            localStorage.setItem("formNama", form1Value);
+            localStorage.setItem("formNim", form2Value);
+            localStorage.setItem("matkul", form4Value);
+            localStorage.setItem("pengampu", form5Value);
+            localStorage.setItem("tanggal", form6Value);
+            localStorage.setItem("formAlasan", form7Value);
+            //pemberian priviw/ data daweal yang akan ditampilkan
+            if (form1Value === defaultNama) {
+                alert(`Kepada ${form5Value} selaku dosen matakuliah ${form4Value}, saya ${form1Value} nim saya ${form2Value}, izin tidak masuk pada tanggal ${form6Value} karena ${form7Value}.`);
+            } else {
+                alert(`Kepada ${form5Value} selaku dosen matakuliah ${form4Value}, saya ${form1Value} nim saya ${form2Value}, izin tidak masuk pada tanggal ${form6Value} karena ${form7Value}.`);}
+
+            generatePDF(form1Value, form2Value, form4Value, form5Value, form6Value, form7Value);
+        }
+        // fungsi meload local storage fungsi save data sebelumnya 
+        function loaddata() {
+            let value1 = localStorage.getItem("formNama");
+            let value2 = localStorage.getItem("formNim");
+            let value4 = localStorage.getItem("matkul");
+            let value5 = localStorage.getItem("pengampu");
+            let value6 = localStorage.getItem("tanggal");
+            let value7 = localStorage.getItem("formAlasan");
+            //pengkondisian user yang sudah terdaftar/belum input data
+            if (value1) document.getElementById("formNama").value = value1;
+            if (value1 === defaultNama) {
+                document.getElementById("formNim").value = defaultNim;
+            } else if (value2) {
+                document.getElementById("formNim").value = value2;
+            }
+            if (value4) document.getElementById("matkul").value = value4;
+            if (value5) document.getElementById("pengampu").value = value5;
+            if (value6) document.getElementById("tanggal").value = value6;
+            if (value7) document.getElementById("formAlasan").value = value7;
+            // pattern jika fungsi bisa dijalankan
+            console.log("Data loaded from localStorage", value1, value2, value4, value5, value6, value7);
+        }
+        // fungsi merubah code jadi pdf
+        function generatePDF(nama, nim, matkul, dosen, tanggal, alasan) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            //membuat bentuk surat
+            let content = `
+                Surat Izin Tidak Berangkat
+
+                Salatiga , ${tanggal}
+                
+                Kepada Yth.,
+                ${dosen}
+                Di tempat
+
+                Dengan hormat,
+
+                Saya yang bertanda tangan di bawah ini:
+                Nama: ${nama}
+                NIM: ${nim}
+                Mata Kuliah: ${matkul}
+
+                Dengan ini mengajukan permohonan izin tidak masuk pada tanggal ${tanggal} dikarenakan ${alasan}.
+
+                Demikian surat izin ini saya buat dengan sebenar-benarnya. Atas perhatian dan pengertiannya, saya ucapkan terima kasih.
+
+                Hormat saya,
+                ${nama}
+            `;
+
+            doc.text(content, 10, 10);
+            doc.save('surat_izin.pdf');
+        }
+        //fungsi yang dipakai saat load ke tab ini
+
+        window.onload = loaddata;
+    </script>
+</body>
+</html>

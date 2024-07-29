@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="abde.css">
+</head>
+<body>
+    <div class="header">
+        <img src="poli.png" alt="logo" class="logo">
+        <img src="XOsX.gif" alt="logo" class="logo2">
+    </div>
+    <div class="isi">
+        <div class="container" id="myForm">
+            <div class="blur-background"></div> 
+            <p class="banner"><b>REGISTER</b>FORM</p>
+            <div class="child">
+                <input type="text" class="form1" id="formNama" placeholder="Nama anda..">
+                <img src="kontak.png" alt="logo1nama" class="logonama">
+            </div>
+            <div class="grandson">
+                <input type="number" class="form2" id="formNim" placeholder="nim....">
+                <img class="logonim" src="NIM.png" alt="logo2nama">
+            </div>
+            <div class="grandson2">
+                <input type="password" class="passwd1" id="formPass" placeholder="buat password">
+                <input type="password" id="formPass1" class="passwd1" placeholder="password harus sama">
+            </div>
+            <div class="btn">
+                <button type="button" class="submit" id="submit">LOGIN</button>
+                <a href="LOGIN.html" class="forget">sudah punya akun?</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('submit').addEventListener('click', function() {
+            let nama = document.getElementById('formNama').value;
+            let nim = document.getElementById('formNim').value;
+            let passwd = document.getElementById('formPass').value;
+            let vpasswd = document.getElementById('formPass').value;
+
+            if (nama === '' || nim === '' || passwd === '' || vpasswd === '') {
+                alert("register gagal, isi semua kolom");
+            } else if (passwd !== vpasswd) {
+                alert("Password tidak sama");
+            } else {
+                alert("register berhasil");
+                window.location.href = 'LOGIN.html';
+            }
+
+            localStorage.setItem('formNama', nama);
+            localStorage.setItem('formNim', nim);
+            localStorage.setItem('formPass', passwd);
+            console.log(nama, nim, passwd);
+        });
+
+    </script>
+</body>
+</html>
