@@ -1,80 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="abde.css">
-    <link rel="html" href="REGISTER.html">
-</head>
-<body>
+    <link rel="stylesheet" href="abde.css" />
+    <link rel="html" href="REGISTER.html" />
+  </head>
+  <body>
     <div class="header">
-        <img src="poli.png" alt="logo" class="logo">
-        <img src="XOsX.gif" alt="logo" class="logo2">
+      <img src="poli.png" alt="logo" class="logo" />
+      <img src="XOsX.gif" alt="logo" class="logo2" />
     </div>
     <div class="isi">
-        <div class="container" id="myForm">
-            <div class="blur-background"></div>
-            <p class="banner"><b>LOGIN</b>FORM</p>
-            <div class="child">
-                <input type="text" class="form-input" id="formNama" placeholder="Nama anda..">
-                <img src="kontak.png" alt="logo1nama" class="logonama">
-            </div>
-            <div class="grandson">
-                <input type="password" class="form-input" id="formPass" placeholder="password....">
-                <img class="logonim" src="NIM.png" alt="logo2nama">
-            </div>
-            <div class="btn">
-                <button class="submit" id="submit">LANJUT</button>
-                <a href="REGISTER.html" class="forget">belum punya akun?</a>
-            </div>
+      <div class="container" id="myForm">
+        <div class="blur-background"></div>
+        <p class="banner"><b>LOGIN</b>FORM</p>
+        <div class="child">
+          <input
+            type="text"
+            class="form-input"
+            id="formNama"
+            placeholder="Nama anda.."
+          />
+          <img src="kontak.png" alt="logo1nama" class="logonama" />
         </div>
+        <div class="grandson">
+          <input
+            type="password"
+            class="form-input"
+            id="formPass"
+            placeholder="password...."
+          />
+          <img class="logonim" src="NIM.png" alt="logo2nama" />
+        </div>
+        <div class="btn">
+          <button class="submit" id="submit">LANJUT</button>
+          <a href="REGISTER.html" class="forget">belum punya akun?</a>
+        </div>
+      </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        const defaultNama = "abde";
-        const defaultNim = "88012023003";
-        const defaultPass = "abdegatel"
-        document.getElementById('submit').addEventListener('click', function(event) {
-            event.preventDefault(); // Mencegah form submit secara default
-            saveData(); // Panggil fungsi saveData() untuk menyimpan data ke localStorage
+      const defaultNama = "abde";
+      const defaultNim = "88012023003";
+      const defaultPass = "abdegatel";
+      document
+        .getElementById("submit")
+        .addEventListener("click", function (event) {
+          event.preventDefault(); // Mencegah form submit secara default
+          saveData(); // Panggil fungsi saveData() untuk menyimpan data ke localStorage
         });
 
+      function saveData() {
+        let inputNama = document.getElementById("formNama").value;
+        let inputPasswd = document.getElementById("formPass").value;
 
+        // Mendapatkan data dari localStorage
+        let storedNama = localStorage.getItem("formNama");
+        let storedPasswd = localStorage.getItem("formPass");
 
-        function saveData() {
-
-            let inputNama = document.getElementById('formNama').value;
-            let inputPasswd = document.getElementById('formPass').value;
-
-            // Mendapatkan data dari localStorage
-            let storedNama = localStorage.getItem('formNama');
-            let storedPasswd = localStorage.getItem('formPass');
-
-            // Memeriksa apakah input sesuai dengan data yang disimpan
-            if (inputNama === storedNama && inputPasswd === storedPasswd ) {
-                alert("Login berhasil!");
-                window.location.href = 'ALSAN.html'; // Ganti dengan halaman setelah login
-            }
-            else if(inputNama === defaultNama && inputPasswd===defaultPass){
-                alert("Login berhasil!");
-                localStorage.setItem('formNama',inputNama);
-                localStorage.setItem('formNim', defaultNim);
-                window.location.href = 'ALSAN.html'; // Ganti dengan halaman setelah login
-                console.log(inputNama, defaultNim);
-
-            }
-
-            else {
-                alert("Nama atau password salah!");
-            }
-
-
-            
-        };
-
-
+        // Memeriksa apakah input sesuai dengan data yang disimpan
+        if (inputNama === storedNama && inputPasswd === storedPasswd) {
+          Swal.fire({
+            title: "BERHASIL LOGIN",
+            text: "silahkan lanjut ke tab selanjutnya",
+            icon: "success",
+            timer: 5000,
+          }).then(() => {
+            window.location.href = "ALSAN.html"; // Ganti dengan halaman setelah login
+          });
+        } else if (inputNama === defaultNama && inputPasswd === defaultPass) {
+          localStorage.setItem("formNama", inputNama);
+          localStorage.setItem("formNim", defaultNim);
+          Swal.fire({
+            title: "BERHASIL LOGIN",
+            text: "silahkan lanjut ke tab selanjutnya",
+            icon: "success",
+            timer: 5000,
+          }).then(() => {
+            window.location.href = "ALSAN.html"; // Ganti dengan halaman setelah login
+          });
+        } else {
+          Swal.fire({
+            title: "LOGIN GAGAL",
+            text: "periksa username atau password anda",
+            icon: "error",
+            timer: 5000,
+          });
+        }
+      }
     </script>
-        
-</body>
+  </body>
 </html>

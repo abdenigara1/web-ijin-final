@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="abde.css"> <!-- Pastikan file CSS tersedia dan berisi gaya-gaya yang sesuai -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -37,19 +39,17 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script>
         document.getElementById('submit2').addEventListener('click', function(event) {
             event.preventDefault();
             saveData();
         });
 
-        //variabel global
-
+        // Variabel global
         const defaultNama = "abde";
         const defaultNim = "88012023003";
-        //funngsi save halalaman pesan ke local storage
 
+        // Fungsi menyimpan halaman form ke local storage
         function saveData() {
             let form1Value = document.getElementById("formNama").value;
             let form2Value = document.getElementById("formNim").value;
@@ -57,27 +57,39 @@
             let form5Value = document.getElementById("pengampu").value;
             let form6Value = document.getElementById("tanggal").value;
             let form7Value = document.getElementById("formAlasan").value;
-            //pengkondisian harus diisi semua
+
+            // Pengkondisian untuk memastikan semua field terisi
             if (!form4Value || !form5Value || !form6Value || !form7Value) {
                 alert("Please fill in all the required fields.");
                 return;
             }
-            //variabel penyimpan nilai
+
+            // Menyimpan nilai ke local storage
             localStorage.setItem("formNama", form1Value);
             localStorage.setItem("formNim", form2Value);
             localStorage.setItem("matkul", form4Value);
             localStorage.setItem("pengampu", form5Value);
             localStorage.setItem("tanggal", form6Value);
             localStorage.setItem("formAlasan", form7Value);
-            //pemberian priviw/ data daweal yang akan ditampilkan
-            if (form1Value === defaultNama) {
-                alert(`Kepada ${form5Value} selaku dosen matakuliah ${form4Value}, saya ${form1Value} nim saya ${form2Value}, izin tidak masuk pada tanggal ${form6Value} karena ${form7Value}.`);
-            } else {
-                alert(`Kepada ${form5Value} selaku dosen matakuliah ${form4Value}, saya ${form1Value} nim saya ${form2Value}, izin tidak masuk pada tanggal ${form6Value} karena ${form7Value}.`);}
 
-            generatePDF(form1Value, form2Value, form4Value, form5Value, form6Value, form7Value);
+            // Menampilkan dialog konfirmasi
+            Swal.fire({
+                title: "Do you want to save the changes?",
+                showDenyButton: true,
+                confirmButtonText: "LANJUT",
+                denyButtonText: `EDIT`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire("SURAT BERHASIL DIBUAT").then(() => {
+                        generatePDF(form1Value, form2Value, form4Value, form5Value, form6Value, form7Value);
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire("SILAHKAN EDIT KEMBALI");
+                }
+            });
         }
-        // fungsi meload local storage fungsi save data sebelumnya 
+
+        // Fungsi memuat data dari local storage
         function loaddata() {
             let value1 = localStorage.getItem("formNama");
             let value2 = localStorage.getItem("formNim");
@@ -85,7 +97,8 @@
             let value5 = localStorage.getItem("pengampu");
             let value6 = localStorage.getItem("tanggal");
             let value7 = localStorage.getItem("formAlasan");
-            //pengkondisian user yang sudah terdaftar/belum input data
+
+            // Pengkondisian user yang sudah terdaftar atau belum input data
             if (value1) document.getElementById("formNama").value = value1;
             if (value1 === defaultNama) {
                 document.getElementById("formNim").value = defaultNim;
@@ -96,43 +109,50 @@
             if (value5) document.getElementById("pengampu").value = value5;
             if (value6) document.getElementById("tanggal").value = value6;
             if (value7) document.getElementById("formAlasan").value = value7;
-            // pattern jika fungsi bisa dijalankan
+
             console.log("Data loaded from localStorage", value1, value2, value4, value5, value6, value7);
         }
-        // fungsi merubah code jadi pdf
+
+        // Fungsi mengubah data menjadi PDF dengan margin kiri dan kanan yang sama
         function generatePDF(nama, nim, matkul, dosen, tanggal, alasan) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            //membuat bentuk surat
-            let content = `
-                Surat Izin Tidak Berangkat
 
-                Salatiga , ${tanggal}
-                
-                Kepada Yth.,
-                ${dosen}
-                Di tempat
+            // Tentukan margin kiri dan kanan
+            const marginLeft = 20;
+            const marginRight = 20;
+            const pageWidth = doc.internal.pageSize.width;
+            const usableWidth = pageWidth - marginLeft - marginRight;
+            const lineHeight = 8;
+            const paragraphSpacing = 2; // Spacing between paragraphs
 
-                Dengan hormat,
+            // Membuat konten surat
+            let paragraphs = [
+                `Surat Izin Tidak Berangkat`,
+                `Salatiga, ${tanggal}`,
+                `Kepada Yth.,\n${dosen}\nDi tempat`,
+                `Dengan hormat,`,
+                `Saya yang bertanda tangan di bawah ini:\nNama: ${nama}\nNIM: ${nim}\nMata Kuliah: ${matkul}`,
+                `Dengan ini mengajukan permohonan izin tidak masuk pada tanggal ${tanggal} dikarenakan ${alasan}.`,
+                `Demikian surat izin ini saya buat dengan sebenar-benarnya. Atas perhatian dan pengertiannya, saya ucapkan terima kasih.`,
+                `Hormat saya,\n\n\n${nama}`
+            ];
 
-                Saya yang bertanda tangan di bawah ini:
-                Nama: ${nama}
-                NIM: ${nim}
-                Mata Kuliah: ${matkul}
+            let y = 10;
 
-                Dengan ini mengajukan permohonan izin tidak masuk pada tanggal ${tanggal} dikarenakan ${alasan}.
+            // Tambahkan setiap paragraf ke dokumen PDF dengan margin yang sama
+            doc.setFontSize(12);
+            paragraphs.forEach(paragraph => {
+                let splitText = doc.splitTextToSize(paragraph, usableWidth);
+                doc.text(splitText, marginLeft, y);
+                y += (splitText.length * lineHeight) ; // Tambahkan paragraphSpacing setelah setiap paragraf
+            });
 
-                Demikian surat izin ini saya buat dengan sebenar-benarnya. Atas perhatian dan pengertiannya, saya ucapkan terima kasih.
-
-                Hormat saya,
-                ${nama}
-            `;
-
-            doc.text(content, 10, 10);
+            // Simpan file PDF
             doc.save('surat_izin.pdf');
         }
-        //fungsi yang dipakai saat load ke tab ini
 
+        // Fungsi yang dipanggil saat halaman dimuat
         window.onload = loaddata;
     </script>
 </body>

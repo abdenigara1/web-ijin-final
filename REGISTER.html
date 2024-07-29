@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="abde.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="header">
@@ -38,23 +39,38 @@
             let nama = document.getElementById('formNama').value;
             let nim = document.getElementById('formNim').value;
             let passwd = document.getElementById('formPass').value;
-            let vpasswd = document.getElementById('formPass').value;
+            let vpasswd = document.getElementById('formPass1').value;
 
             if (nama === '' || nim === '' || passwd === '' || vpasswd === '') {
-                alert("register gagal, isi semua kolom");
+                Swal.fire({
+                    title: "REGISTER GAGAL",
+                    text: "isi semua kolom",
+                    icon: "error",
+                    timer: 5000,
+                });
             } else if (passwd !== vpasswd) {
-                alert("Password tidak sama");
+                Swal.fire({
+                    title: "REGISTER GAGAL",
+                    text: "pastikan password sama",
+                    icon: "error",
+                    timer: 5000,
+                });
             } else {
-                alert("register berhasil");
-                window.location.href = 'LOGIN.html';
+                localStorage.setItem('formNama', nama);
+                localStorage.setItem('formNim', nim);
+                localStorage.setItem('formPass', passwd);
+                Swal.fire({
+                    title: "BERHASIL BUAT AKUN",
+                    text: "silahkan lanjut ke tab selanjutnya",
+                    icon: "success",
+                    timer: 5000,
+                }).then(() => {
+                    window.location.href = "LOGIN.html"; // Ganti dengan halaman setelah login
+                });
             }
 
-            localStorage.setItem('formNama', nama);
-            localStorage.setItem('formNim', nim);
-            localStorage.setItem('formPass', passwd);
             console.log(nama, nim, passwd);
         });
-
     </script>
 </body>
 </html>
